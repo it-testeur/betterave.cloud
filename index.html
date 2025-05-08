@@ -52,18 +52,14 @@
 
     <hr>
 
-    <div class="file-links">
-        <h2>📁 Liens vers les fichiers hébergés</h2>
-        <p>Une fois les fichiers téléchargés dans le dossier <code>tirages/</code> de ton dépôt GitHub Pages, les participants peuvent y accéder via ces liens :</p>
-
-        <!-- 🔽 Tu peux ajouter manuellement ou dynamiquement les liens ici -->
-        <a href="tirages/Secret_Santa_Alice.html" target="_blank">🎁 Voir le tirage de Alice</a>
-        <a href="tirages/Secret_Santa_Bob.html" target="_blank">🎁 Voir le tirage de Bob</a>
-        <a href="tirages/Secret_Santa_Claire.html" target="_blank">🎁 Voir le tirage de Claire</a>
+    <div class="file-links" id="hostedLinksContainer">
+        <!-- Les liens seront ajoutés dynamiquement ici -->
     </div>
 
     <script>
         function genererFichiers() {
+            const githubBaseURL = "https://tonpseudo.github.io/ton-repo/tirages/"; // Remplace par ton URL GitHub Pages
+
             const input = document.getElementById("namesInput").value;
             const lines = input.split("\n").map(line => line.trim()).filter(line => line !== "");
             const participants = [];
@@ -139,6 +135,21 @@
                 mailtoLink.href = `mailto:${giver.email}?subject=${subject}&body=${body}`;
                 mailtoLink.innerText = `✉️ Envoyer à ${giver.name}`;
                 fileLinksDiv.appendChild(mailtoLink);
+            });
+
+            // Générer dynamiquement les liens vers les fichiers hébergés
+            const hostedLinksContainer = document.getElementById("hostedLinksContainer");
+            hostedLinksContainer.innerHTML = `
+                <h2>📁 Liens vers les fichiers hébergés</h2>
+                <p>Une fois les fichiers téléchargés dans le dossier <code>tirages/</code> de ton dépôt GitHub Pages, les participants peuvent y accéder via ces liens :</p>
+            `;
+
+            participants.forEach(giver => {
+                const hostedLink = document.createElement("a");
+                hostedLink.href = `${githubBaseURL}Secret_Santa_${giver.name}.html`;
+                hostedLink.target = "_blank";
+                hostedLink.innerText = `🎁 Voir le tirage de ${giver.name}`;
+                hostedLinksContainer.appendChild(hostedLink);
             });
         }
     </script>
