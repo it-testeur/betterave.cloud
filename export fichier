@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Secret Santa</title>
+</head>
+<body>
+    <h1>Bienvenue sur le site Secret Santa 🎅🎁</h1>
+    <p>Chaque participant va recevoir un tirage au sort pour Noël !</p>
+    
+    <!-- Lien vers les fichiers générés -->
+    <h2>Accédez aux tirages :</h2>
+    <p><a href="tirages/Secret_Santa_Alice.html">Télécharger le tirage de Alice</a></p>
+    <p><a href="tirages/Secret_Santa_Bob.html">Télécharger le tirage de Bob</a></p>
+    <!-- Ajouter d'autres liens selon les participants -->
+</body>
+</html>
