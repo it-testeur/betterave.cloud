@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Tirage au sort</title>
+    <title>Tirage de paires</title>
     <style>
         body { font-family: Arial; margin: 20px; }
         textarea { width: 100%; height: 100px; }
@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <h1>Tirage au sort</h1>
+    <h1>Tirage de paires aléatoires</h1>
     <p>Entrez un nom par ligne :</p>
     <textarea id="namesInput"></textarea><br><br>
     <button onclick="tirage()">Lancer le tirage</button>
@@ -18,7 +18,7 @@
     <h2>Résultat :</h2>
     <table id="resultTable">
         <thead>
-            <tr><th>#</th><th>Nom</th></tr>
+            <tr><th>Nom</th><th>Jumelé avec</th></tr>
         </thead>
         <tbody></tbody>
     </table>
@@ -27,14 +27,25 @@
         function tirage() {
             let input = document.getElementById("namesInput").value;
             let names = input.split("\n").map(n => n.trim()).filter(n => n !== "");
-            names = names.sort(() => Math.random() - 0.5); // Mélange aléatoire
 
+            if (names.length < 2) {
+                alert("Entrez au moins 2 noms.");
+                return;
+            }
+
+            if (names.length % 2 !== 0) {
+                alert("Le nombre de noms doit être pair pour former des paires.");
+                return;
+            }
+
+            names = names.sort(() => Math.random() - 0.5); // Mélanger les noms
             let tbody = document.getElementById("resultTable").querySelector("tbody");
             tbody.innerHTML = "";
-            names.forEach((name, index) => {
-                let row = `<tr><td>${index + 1}</td><td>${name}</td></tr>`;
+
+            for (let i = 0; i < names.length; i += 2) {
+                let row = `<tr><td>${names[i]}</td><td>${names[i + 1]}</td></tr>`;
                 tbody.innerHTML += row;
-            });
+            }
         }
     </script>
 </body>
