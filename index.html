@@ -2,49 +2,59 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Secret Santa - Fichiers HTML</title>
+    <title>Secret Santa - Tirage + Email</title>
     <style>
         body { font-family: Arial; margin: 20px; }
-        textarea { width: 100%; height: 100px; }
+        textarea { width: 100%; height: 120px; }
         .file-links { margin-top: 20px; }
-        a { display: block; margin-bottom: 8px; color: darkgreen; font-weight: bold; }
+        a { display: block; margin-bottom: 6px; color: darkblue; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>🎅 Secret Santa – Générateur de fichiers HTML secrets</h1>
-    <p>Entrez un nom par ligne :</p>
-    <textarea id="namesInput" placeholder="Jean\nMarie\nClaire\nPaul..."></textarea><br><br>
-    <button onclick="genererFichiers()">Générer les fichiers</button>
+    <h1>🎅 Secret Santa – Fichiers + Emails prêts</h1>
+    <p>Entrez un nom et une adresse e-mail par ligne, séparés par un <code>:</code> :</p>
+    <textarea id="namesInput" placeholder="Alice : alice@email.com&#10;Bob : bob@email.com"></textarea><br><br>
+    <button onclick="genererFichiers()">Générer les fichiers et emails</button>
 
     <div class="file-links" id="fileLinks"></div>
 
     <script>
         function genererFichiers() {
             const input = document.getElementById("namesInput").value;
-            const names = input.split("\n").map(n => n.trim()).filter(n => n !== "");
+            const lines = input.split("\n").map(line => line.trim()).filter(line => line !== "");
+            const participants = [];
 
-            if (names.length < 2) {
-                alert("Entrez au moins 2 noms.");
+            for (const line of lines) {
+                const [name, email] = line.split(":").map(part => part.trim());
+                if (!name || !email || !email.includes("@")) {
+                    alert("Format invalide : utilisez Nom : email@example.com");
+                    return;
+                }
+                participants.push({ name, email });
+            }
+
+            if (participants.length < 2) {
+                alert("Il faut au moins deux participants.");
                 return;
             }
 
-            // Générer une assignation aléatoire sans auto-désignation
+            // Tirage aléatoire sans auto-attribution
             let shuffled;
             do {
-                shuffled = [...names].sort(() => Math.random() - 0.5);
-            } while (shuffled.some((name, i) => name === names[i]));
+                shuffled = [...participants].sort(() => Math.random() - 0.5);
+            } while (shuffled.some((p, i) => p.name === participants[i].name));
 
             const fileLinksDiv = document.getElementById("fileLinks");
-            fileLinksDiv.innerHTML = "<h2>📄 Fichiers HTML générés :</h2>";
+            fileLinksDiv.innerHTML = "<h2>📄 Fichiers et emails :</h2>";
 
-            names.forEach((giver, i) => {
+            participants.forEach((giver, i) => {
                 const recipient = shuffled[i];
                 const htmlContent = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Secret Santa pour ${giver}</title>
+    <title>Secret Santa pour ${giver.name}</title>
     <style>
         body { font-family: 'Arial', sans-serif; text-align: center; padding: 50px; background: #f9f9f9; }
         .card {
@@ -62,8 +72,8 @@
 <body>
     <div class="card">
         <h1>🎅 Secret Santa 🎁</h1>
-        <p><strong>${giver}</strong>, tu dois offrir un cadeau à :</p>
-        <h2>${recipient}</h2>
+        <p><strong>${giver.name}</strong>, tu dois offrir un cadeau à :</p>
+        <h2>${recipient.name}</h2>
         <p>Garde ça secret 🤫</p>
         <p>Joyeux Noël ! 🎄</p>
     </div>
@@ -71,14 +81,23 @@
 </html>
                 `;
 
+                // Création du fichier HTML
                 const blob = new Blob([htmlContent], { type: "text/html" });
                 const url = URL.createObjectURL(blob);
 
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = `Secret_Santa_${giver}.html`;
-                link.innerText = `📥 Télécharger le fichier HTML pour ${giver}`;
-                fileLinksDiv.appendChild(link);
+                const downloadLink = document.createElement("a");
+                downloadLink.href = url;
+                downloadLink.download = `Secret_Santa_${giver.name}.html`;
+                downloadLink.innerText = `📥 Télécharger pour ${giver.name}`;
+                fileLinksDiv.appendChild(downloadLink);
+
+                // Lien mailto prérempli (sans pièce jointe)
+                const subject = encodeURIComponent("🎅 Ton tirage Secret Santa !");
+                const body = encodeURIComponent(`Bonjour ${giver.name},\n\nVoici le résultat de ton tirage Secret Santa. Tu peux télécharger ton fichier ici :\n${url}\n\nN'oublie pas de garder le secret 😉\n\nJoyeux Noël ! 🎄`);
+                const mailtoLink = document.createElement("a");
+                mailtoLink.href = `mailto:${giver.email}?subject=${subject}&body=${body}`;
+                mailtoLink.innerText = `✉️ Envoyer à ${giver.name}`;
+                fileLinksDiv.appendChild(mailtoLink);
             });
         }
     </script>
