@@ -2,27 +2,24 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Secret Santa</title>
+    <title>Secret Santa - Fichiers HTML</title>
     <style>
         body { font-family: Arial; margin: 20px; }
         textarea { width: 100%; height: 100px; }
-        .participant { margin: 10px 0; }
-        .result { font-weight: bold; margin-top: 5px; color: green; }
+        .file-links { margin-top: 20px; }
+        a { display: block; margin-bottom: 8px; color: darkgreen; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>🎅 Secret Santa – Tirage au sort</h1>
+    <h1>🎅 Secret Santa – Générateur de fichiers HTML secrets</h1>
     <p>Entrez un nom par ligne :</p>
-    <textarea id="namesInput"></textarea><br><br>
-    <button onclick="genererBoutons()">Lancer le tirage secret</button>
+    <textarea id="namesInput" placeholder="Jean\nMarie\nClaire\nPaul..."></textarea><br><br>
+    <button onclick="genererFichiers()">Générer les fichiers</button>
 
-    <h2>Participants :</h2>
-    <div id="participants"></div>
+    <div class="file-links" id="fileLinks"></div>
 
     <script>
-        let tirage = [];
-
-        function genererBoutons() {
+        function genererFichiers() {
             const input = document.getElementById("namesInput").value;
             const names = input.split("\n").map(n => n.trim()).filter(n => n !== "");
 
@@ -31,31 +28,57 @@
                 return;
             }
 
-            // Mélanger les destinataires jusqu'à ce que personne ne se tire lui-même
+            // Générer une assignation aléatoire sans auto-désignation
             let shuffled;
             do {
                 shuffled = [...names].sort(() => Math.random() - 0.5);
             } while (shuffled.some((name, i) => name === names[i]));
 
-            tirage = names.map((giver, i) => ({ from: giver, to: shuffled[i] }));
+            const fileLinksDiv = document.getElementById("fileLinks");
+            fileLinksDiv.innerHTML = "<h2>📄 Fichiers HTML générés :</h2>";
 
-            const container = document.getElementById("participants");
-            container.innerHTML = "";
+            names.forEach((giver, i) => {
+                const recipient = shuffled[i];
+                const htmlContent = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Secret Santa pour ${giver}</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; text-align: center; padding: 50px; background: #f9f9f9; }
+        .card {
+            border: 2px dashed #c62828;
+            padding: 30px;
+            background: #fff8e1;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 10px;
+        }
+        h1 { color: #c62828; }
+        p { font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎅 Secret Santa 🎁</h1>
+        <p><strong>${giver}</strong>, tu dois offrir un cadeau à :</p>
+        <h2>${recipient}</h2>
+        <p>Garde ça secret 🤫</p>
+        <p>Joyeux Noël ! 🎄</p>
+    </div>
+</body>
+</html>
+                `;
 
-            tirage.forEach(pair => {
-                const div = document.createElement("div");
-                div.className = "participant";
-                const btn = document.createElement("button");
-                btn.innerText = `Voir destinataire pour ${pair.from}`;
-                btn.onclick = () => {
-                    const msg = document.createElement("div");
-                    msg.className = "result";
-                    msg.innerText = `🎁 ${pair.from}, tu dois offrir un cadeau à : ${pair.to}`;
-                    div.appendChild(msg);
-                    setTimeout(() => msg.remove(), 7000); // Masquer après 7 sec
-                };
-                div.appendChild(btn);
-                container.appendChild(div);
+                const blob = new Blob([htmlContent], { type: "text/html" });
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `Secret_Santa_${giver}.html`;
+                link.innerText = `📥 Télécharger le fichier HTML pour ${giver}`;
+                fileLinksDiv.appendChild(link);
             });
         }
     </script>
