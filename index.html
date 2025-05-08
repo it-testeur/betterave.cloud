@@ -2,50 +2,61 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Tirage de paires</title>
+    <title>Secret Santa</title>
     <style>
         body { font-family: Arial; margin: 20px; }
         textarea { width: 100%; height: 100px; }
-        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+        .participant { margin: 10px 0; }
+        .result { font-weight: bold; margin-top: 5px; color: green; }
     </style>
 </head>
 <body>
-    <h1>Tirage de paires aléatoires</h1>
+    <h1>🎅 Secret Santa – Tirage au sort</h1>
     <p>Entrez un nom par ligne :</p>
     <textarea id="namesInput"></textarea><br><br>
-    <button onclick="tirage()">Lancer le tirage</button>
+    <button onclick="genererBoutons()">Lancer le tirage secret</button>
 
-    <h2>Résultat :</h2>
-    <table id="resultTable">
-        <thead>
-            <tr><th>Nom</th><th>Jumelé avec</th></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <h2>Participants :</h2>
+    <div id="participants"></div>
 
     <script>
-        function tirage() {
-            let input = document.getElementById("namesInput").value;
-            let names = input.split("\n").map(n => n.trim()).filter(n => n !== "");
+        let tirage = [];
+
+        function genererBoutons() {
+            const input = document.getElementById("namesInput").value;
+            const names = input.split("\n").map(n => n.trim()).filter(n => n !== "");
 
             if (names.length < 2) {
                 alert("Entrez au moins 2 noms.");
                 return;
             }
 
-            if (names.length % 2 !== 0) {
-                alert("Le nombre de noms doit être pair pour former des paires.");
-                return;
-            }
+            // Mélanger les destinataires jusqu'à ce que personne ne se tire lui-même
+            let shuffled;
+            do {
+                shuffled = [...names].sort(() => Math.random() - 0.5);
+            } while (shuffled.some((name, i) => name === names[i]));
 
-            names = names.sort(() => Math.random() - 0.5); // Mélanger les noms
-            let tbody = document.getElementById("resultTable").querySelector("tbody");
-            tbody.innerHTML = "";
+            tirage = names.map((giver, i) => ({ from: giver, to: shuffled[i] }));
 
-            for (let i = 0; i < names.length; i += 2) {
-                let row = `<tr><td>${names[i]}</td><td>${names[i + 1]}</td></tr>`;
-                tbody.innerHTML += row;
-            }
+            const container = document.getElementById("participants");
+            container.innerHTML = "";
+
+            tirage.forEach(pair => {
+                const div = document.createElement("div");
+                div.className = "participant";
+                const btn = document.createElement("button");
+                btn.innerText = `Voir destinataire pour ${pair.from}`;
+                btn.onclick = () => {
+                    const msg = document.createElement("div");
+                    msg.className = "result";
+                    msg.innerText = `🎁 ${pair.from}, tu dois offrir un cadeau à : ${pair.to}`;
+                    div.appendChild(msg);
+                    setTimeout(() => msg.remove(), 7000); // Masquer après 7 sec
+                };
+                div.appendChild(btn);
+                container.appendChild(div);
+            });
         }
     </script>
 </body>
