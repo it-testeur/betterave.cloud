@@ -2,21 +2,65 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Secret Santa - Tirage + Email</title>
+    <title>Secret Santa - Tirage + Lien vers tirages</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        textarea { width: 100%; height: 120px; }
-        .file-links { margin-top: 20px; }
-        a { display: block; margin-bottom: 6px; color: darkblue; font-weight: bold; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        textarea {
+            width: 100%;
+            height: 140px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .file-links {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        a {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+        h1, h2 {
+            color: #b71c1c;
+        }
     </style>
 </head>
 <body>
-    <h1>🎅 Secret Santa – Fichiers + Emails prêts</h1>
-    <p>Entrez un nom et une adresse e-mail par ligne, séparés par un <code>:</code> :</p>
-    <textarea id="namesInput" placeholder="Alice : alice@email.com&#10;Bob : bob@email.com"></textarea><br><br>
+    <h1>🎅 Secret Santa – Générateur de tirage + Fichiers</h1>
+
+    <p>Entrez un nom et une adresse e-mail par ligne, séparés par <code>:</code> :</p>
+    <textarea id="namesInput" placeholder="Alice : alice@email.com&#10;Bob : bob@email.com"></textarea><br>
     <button onclick="genererFichiers()">Générer les fichiers et emails</button>
 
     <div class="file-links" id="fileLinks"></div>
+
+    <hr>
+
+    <div class="file-links">
+        <h2>📁 Liens vers les fichiers hébergés</h2>
+        <p>Une fois les fichiers téléchargés dans le dossier <code>tirages/</code> de ton dépôt GitHub Pages, les participants peuvent y accéder via ces liens :</p>
+
+        <!-- 🔽 Tu peux ajouter manuellement ou dynamiquement les liens ici -->
+        <a href="tirages/Secret_Santa_Alice.html" target="_blank">🎁 Voir le tirage de Alice</a>
+        <a href="tirages/Secret_Santa_Bob.html" target="_blank">🎁 Voir le tirage de Bob</a>
+        <a href="tirages/Secret_Santa_Claire.html" target="_blank">🎁 Voir le tirage de Claire</a>
+    </div>
 
     <script>
         function genererFichiers() {
@@ -38,14 +82,13 @@
                 return;
             }
 
-            // Tirage aléatoire sans auto-attribution
             let shuffled;
             do {
                 shuffled = [...participants].sort(() => Math.random() - 0.5);
             } while (shuffled.some((p, i) => p.name === participants[i].name));
 
             const fileLinksDiv = document.getElementById("fileLinks");
-            fileLinksDiv.innerHTML = "<h2>📄 Fichiers et emails :</h2>";
+            fileLinksDiv.innerHTML = "<h2>📄 Fichiers et emails à télécharger :</h2>";
 
             participants.forEach((giver, i) => {
                 const recipient = shuffled[i];
@@ -81,7 +124,6 @@
 </html>
                 `;
 
-                // Création du fichier HTML
                 const blob = new Blob([htmlContent], { type: "text/html" });
                 const url = URL.createObjectURL(blob);
 
@@ -91,7 +133,6 @@
                 downloadLink.innerText = `📥 Télécharger pour ${giver.name}`;
                 fileLinksDiv.appendChild(downloadLink);
 
-                // Lien mailto prérempli (sans pièce jointe)
                 const subject = encodeURIComponent("🎅 Ton tirage Secret Santa !");
                 const body = encodeURIComponent(`Bonjour ${giver.name},\n\nVoici le résultat de ton tirage Secret Santa. Tu peux télécharger ton fichier ici :\n${url}\n\nN'oublie pas de garder le secret 😉\n\nJoyeux Noël ! 🎄`);
                 const mailtoLink = document.createElement("a");
