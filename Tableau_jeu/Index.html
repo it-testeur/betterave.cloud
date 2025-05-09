@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau de points - Jeux de cartes</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    input[type="number"] {
+      width: 60px;
+    }
+    .total-row {
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Tableau de comptage de points</h2>
+
+<form id="player-form">
+  <label>Joueurs (séparés par des virgules) :</label><br>
+  <input type="text" id="players-input" placeholder="Alice, Bob, Claire">
+  <button type="submit">Créer le tableau</button>
+</form>
+
+<div id="table-container"></div>
+
+<script>
+  document.getElementById('player-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const players = document.getElementById('players-input').value.split(',').map(p => p.trim());
+    if (players.length === 0) return;
+
+    createTable(players);
+  });
+
+  function createTable(players) {
+    const container = document.getElementById('table-container');
+    container.innerHTML = '';
+
+    let roundCount = 1;
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+
+    headRow.appendChild(document.createElement('th')); // Empty top-left cell
+
+    players.forEach(name => {
+      const th = document.createElement('th');
+      th.textContent = name;
+      headRow.appendChild(th);
+    });
+
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+
+    function addRoundRow() {
+      const tr = document.createElement('tr');
+      const roundCell = document.createElement('td');
+      roundCell.textContent = 'Manche ' + roundCount++;
+      tr.appendChild(roundCell);
+
+      players.forEach(() => {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = 0;
+        td.appendChild(input);
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    }
+
+    // Ajout de 5 manches par défaut
+    for (let i = 0; i < 5; i++) {
+      addRoundRow();
+    }
+
+    // Ligne des totaux
+    const totalRow = document.createElement('tr');
+    totalRow.classList.add('total-row');
+    const totalLabel = document.createElement('td');
+    totalLabel.textContent = 'Total';
+    totalRow.appendChild(totalLabel);
+
+    const totalCells = players.map(() => {
+      const td = document.createElement('td');
+      td.textContent = '0';
+      totalRow.appendChild(td);
+      return td;
+    });
+
+    tbody.appendChild(totalRow);
+
+    // Bouton pour ajouter une manche
+    const addButton = document.createElement('button');
+    addButton.textContent = 'Ajouter une manche';
+    addButton.onclick = () => {
+      addRoundRow();
+    };
+
+    // Bouton pour calculer les totaux
+    const totalButton = document.createElement('button');
+    totalButton.textContent = 'Calculer les totaux';
+    totalButton.onclick = () => {
+      const rows = tbody.querySelectorAll('tr:not(.total-row)');
+      const totals = Array(players.length).fill(0);
+
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        inputs.forEach((input, index) => {
+          totals[index] += parseInt(input.value) || 0;
+        });
+      });
+
+      totals.forEach((t, i) => {
+        totalCells[i].textContent = t;
+      });
+    };
+
+    container.appendChild(table);
+    container.appendChild(addButton);
+    container.appendChild(totalButton);
+  }
+</script>
+
+</body>
+</html>
