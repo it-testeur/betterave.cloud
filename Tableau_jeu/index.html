@@ -9,39 +9,18 @@
 <body>
     <div class="container">
         <h1>Calcul des Points par Manches</h1>
+        
+        <!-- Formulaire pour ajouter des joueurs -->
+        <div class="player-form">
+            <label for="playerName">Nom du joueur :</label>
+            <input type="text" id="playerName" placeholder="Nom du joueur" />
+            <button onclick="addPlayer()">Ajouter un joueur</button>
+        </div>
+
         <table id="scoreboard">
             <thead>
                 <tr>
                     <th>Joueur</th>
                     <th>Manche 1</th>
                     <th>Manche 2</th>
-                    <th>Manche 3</th>
-                    <th>Manche 4</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Joueur 1</td>
-                    <td><input type="number" class="score" data-player="1" data-round="1" onchange="updateScore()"></td>
-                    <td><input type="number" class="score" data-player="1" data-round="2" onchange="updateScore()"></td>
-                    <td><input type="number" class="score" data-player="1" data-round="3" onchange="updateScore()"></td>
-                    <td><input type="number" class="score" data-player="1" data-round="4" onchange="updateScore()"></td>
-                    <td><span class="total">0</span></td>
-                </tr>
-                <tr>
-                    <td>Joueur 2</td>
-                    <td><input type="number" class="score" data-player="2" data-round="1" onchange="updateScore()"></td>
-                    <td><input type="number" class="score" data-player="2" data-round="2" onchange="updateScore()"></td>
-                    <td><input type="number" class="score" data-player="2" data-round="3" onchange="updateScore()"></td>
-                    <td><input type="number" class="score" data-player="2" data-round="4" onchange="updateScore()"></td>
-                    <td><span class="total">0</span></td>
-                </tr>
-                <!-- Ajouter d'autres joueurs ici -->
-            </tbody>
-        </table>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+                    <th>Manche 3
