@@ -77,4 +77,70 @@ function ajouterJoueur() {
 
   // Ajouter le nom dans l'en-tête
   const ligneEntete = document.getElementById("ligneEntete");
-  const th =
+  const th = document.createElement("th");
+  th.innerText = nom;
+  ligneEntete.appendChild(th);
+
+  // Ajouter une cellule total pour ce joueur
+  const ligneTotaux = document.getElementById("ligneTotaux");
+  const tdTotal = document.createElement("td");
+  tdTotal.innerText = "0";
+  ligneTotaux.appendChild(tdTotal);
+
+  // Ajouter une cellule vide dans chaque manche existante
+  const lignes = document.querySelectorAll("#corpsTableau tr");
+  lignes.forEach(ligne => {
+    const td = document.createElement("td");
+    const input = document.createElement("input");
+    input.type = "number";
+    input.value = 0;
+    input.addEventListener("input", calculerTotaux);
+    td.appendChild(input);
+    ligne.appendChild(td);
+  });
+
+  calculerTotaux();
+}
+
+function ajouterManche() {
+  manches++;
+  const tr = document.createElement("tr");
+  const tdManche = document.createElement("td");
+  tdManche.innerText = `Manche ${manches}`;
+  tr.appendChild(tdManche);
+
+  for (let i = 0; i < joueurs.length; i++) {
+    const td = document.createElement("td");
+    const input = document.createElement("input");
+    input.type = "number";
+    input.value = 0;
+    input.addEventListener("input", calculerTotaux);
+    td.appendChild(input);
+    tr.appendChild(td);
+  }
+
+  document.getElementById("corpsTableau").appendChild(tr);
+  calculerTotaux();
+}
+
+function calculerTotaux() {
+  const lignes = document.querySelectorAll("#corpsTableau tr");
+  const totaux = Array(joueurs.length).fill(0);
+
+  lignes.forEach(ligne => {
+    const inputs = ligne.querySelectorAll("input");
+    inputs.forEach((input, index) => {
+      totaux[index] += parseInt(input.value) || 0;
+    });
+  });
+
+  // Mettre à jour les totaux
+  const ligneTotaux = document.getElementById("ligneTotaux");
+  totaux.forEach((total, index) => {
+    ligneTotaux.cells[index + 1].innerText = total;
+  });
+}
+</script>
+
+</body>
+</html>
