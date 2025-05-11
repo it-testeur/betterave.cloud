@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Compteur de Points</title>
   <style>
     body {
@@ -22,7 +22,7 @@
       width: 60px;
     }
     input[type="text"] {
-      width: 100px;
+      width: 150px;
     }
     button {
       margin: 5px;
@@ -47,14 +47,15 @@
 
 <table id="tableauPoints">
   <thead>
-    <tr>
+    <tr id="ligneEntete">
       <th>Manche</th>
     </tr>
   </thead>
   <tbody id="corpsTableau">
+    <!-- Les manches seront ici -->
   </tbody>
   <tfoot>
-    <tr class="totaux">
+    <tr id="ligneTotaux" class="totaux">
       <td>Total</td>
     </tr>
   </tfoot>
@@ -67,40 +68,13 @@ let joueurs = [];
 let manches = 0;
 
 function ajouterJoueur() {
-  const nom = document.getElementById("nouveauJoueur").value.trim();
+  const inputNom = document.getElementById("nouveauJoueur");
+  const nom = inputNom.value.trim();
   if (!nom) return;
 
   joueurs.push(nom);
-  document.getElementById("nouveauJoueur").value = "";
+  inputNom.value = "";
 
-  // Ajouter une colonne pour ce joueur
-  const entete = document.querySelector("#tableauPoints thead tr");
-  const totalRow = document.querySelector("#tableauPoints tfoot tr");
-  const rows = document.querySelectorAll("#corpsTableau tr");
-
-  // En-tête
-  const th = document.createElement("th");
-  th.innerText = nom;
-  entete.appendChild(th);
-
-  // Totaux
-  const tdTotal = document.createElement("td");
-  tdTotal.innerText = "0";
-  totalRow.appendChild(tdTotal);
-
-  // Pour chaque manche déjà existante, ajouter une cellule vide pour le joueur
-  rows.forEach(row => {
-    const td = document.createElement("td");
-    const input = document.createElement("input");
-    input.type = "number";
-    input.value = 0;
-    input.addEventListener("input", calculerTotaux);
-    td.appendChild(input);
-    row.appendChild(td);
-  });
-
-  calculerTotaux();
-}
-
-function ajouterManche() {
-  manches
+  // Ajouter le nom dans l'en-tête
+  const ligneEntete = document.getElementById("ligneEntete");
+  const th =
