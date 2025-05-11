@@ -1,88 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Compteur de Points</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-    th, td {
-      border: 1px solid #999;
-      padding: 8px;
-      text-align: center;
-    }
-    input[type="number"] {
-      width: 60px;
-    }
-    input[type="text"] {
-      width: 150px;
-    }
-    button {
-      margin: 5px;
-    }
-    .totaux {
-      font-weight: bold;
-      background-color: #e0e0e0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcul des Points par Manches</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Calcul des Points par Manches</h1>
+        <table id="scoreboard">
+            <thead>
+                <tr>
+                    <th>Joueur</th>
+                    <th>Manche 1</th>
+                    <th>Manche 2</th>
+                    <th>Manche 3</th>
+                    <th>Manche 4</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Joueur 1</td>
+                    <td><input type="number" class="score" data-player="1" data-round="1" onchange="updateScore()"></td>
+                    <td><input type="number" class="score" data-player="1" data-round="2" onchange="updateScore()"></td>
+                    <td><input type="number" class="score" data-player="1" data-round="3" onchange="updateScore()"></td>
+                    <td><input type="number" class="score" data-player="1" data-round="4" onchange="updateScore()"></td>
+                    <td><span class="total">0</span></td>
+                </tr>
+                <tr>
+                    <td>Joueur 2</td>
+                    <td><input type="number" class="score" data-player="2" data-round="1" onchange="updateScore()"></td>
+                    <td><input type="number" class="score" data-player="2" data-round="2" onchange="updateScore()"></td>
+                    <td><input type="number" class="score" data-player="2" data-round="3" onchange="updateScore()"></td>
+                    <td><input type="number" class="score" data-player="2" data-round="4" onchange="updateScore()"></td>
+                    <td><span class="total">0</span></td>
+                </tr>
+                <!-- Ajouter d'autres joueurs ici -->
+            </tbody>
+        </table>
+    </div>
 
-<h2>Compteur de Points par Manche</h2>
-
-<div>
-  <label>Ajouter un joueur : </label>
-  <input type="text" id="nouveauJoueur" />
-  <button id="btnAjouterJoueur">Ajouter</button>
-</div>
-
-<br>
-
-<table id="tableauPoints">
-  <thead>
-    <tr id="ligneEntete">
-      <th>Manche</th>
-    </tr>
-  </thead>
-  <tbody id="corpsTableau">
-  </tbody>
-  <tfoot>
-    <tr id="ligneTotaux" class="totaux">
-      <td>Total</td>
-    </tr>
-  </tfoot>
-</table>
-
-<button onclick="ajouterManche()">Ajouter une manche</button>
-
-<script>
-let joueurs = [];
-let manches = 0;
-
-function ajouterJoueur() {
-  const inputNom = document.getElementById("nouveauJoueur");
-  const nom = inputNom.value.trim();
-  if (!nom) return;
-
-  joueurs.push(nom);
-
-  // Ajouter le nom dans l'en-tête
-  const ligneEntete = document.getElementById("ligneEntete");
-  const th = document.createElement("th");
-  th.innerText = nom;
-  ligneEntete.appendChild(th);
-
-  // Ajouter une cellule total pour ce joueur
-  const ligneTotaux = document.getElementById("ligneTotaux");
-  const tdTotal = document.createElement("td");
-  tdTotal.innerText = "0";
-  ligneTotaux.appendChild(tdTotal);
-
-  // Ajouter une cellule vide dans chaque
+    <script src="script.js"></script>
+</body>
+</html>
