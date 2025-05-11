@@ -208,6 +208,7 @@
         // Mettre à jour les scores et les totaux
         function updateScore() {
             const rows = document.querySelectorAll('#scoreboard tbody tr');
+            let totalPerPlayer = Array(playerCount).fill(0); // Réinitialiser les totaux des joueurs
             totalPerRound = new Array(roundCount).fill(0); // Réinitialiser les totaux des manches
 
             rows.forEach(row => {
@@ -217,7 +218,14 @@
                 scores.forEach(score => {
                     const value = parseInt(score.value) || 0;
                     playerTotal += value;
-                    totalPerRound[score.dataset.round - 1] += value; // Ajouter au total de la manche
+
+                    // Mise à jour du total de la manche
+                    const roundIndex = score.dataset.round - 1;
+                    totalPerRound[roundIndex] += value;
+
+                    // Mise à jour du total du joueur
+                    const playerIndex = score.dataset.player - 1;
+                    totalPerPlayer[playerIndex] += value;
                 });
 
                 // Mettre à jour le total du joueur
@@ -228,6 +236,13 @@
             // Mettre à jour les totaux par manche
             for (let i = 0; i < roundCount; i++) {
                 document.getElementById(`round${i + 1}Total`).textContent = totalPerRound[i];
+            }
+
+            // Mettre à jour les totaux par joueur
+            for (let i = 0; i < playerCount; i++) {
+                const row = document.querySelectorAll('#scoreboard tbody tr')[i];
+                const totalCell = row.querySelector('.total');
+                totalCell.textContent = totalPerPlayer[i];
             }
         }
     </script>
