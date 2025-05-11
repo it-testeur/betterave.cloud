@@ -125,11 +125,7 @@
             <thead>
                 <tr>
                     <th>Joueur</th>
-                    <th id="roundHeader1">Manche 1</th>
-                    <th id="roundHeader2"></th>
-                    <th id="roundHeader3"></th>
-                    <th id="roundHeader4"></th>
-                    <th>Total</th>
+                    <!-- Les titres des manches seront ajoutés dynamiquement ici -->
                 </tr>
             </thead>
             <tbody>
@@ -146,8 +142,8 @@
 
     <script>
         let playerCount = 0; // Compteur pour ajouter les joueurs dynamiquement
-        let roundCount = 1; // Compteur pour le nombre de manches
-        let totalPerRound = [0]; // Total pour chaque manche (initialisé pour la première manche)
+        let roundCount = 0; // Compteur pour le nombre de manches
+        let totalPerRound = []; // Total pour chaque manche
 
         // Ajouter un joueur au tableau
         function addPlayer() {
@@ -161,17 +157,22 @@
             const tableBody = document.querySelector('#scoreboard tbody');
             const row = document.createElement('tr');
 
-            // Créer une nouvelle ligne pour un joueur avec des cases de scores pour chaque manche
-            let scoreCells = "";
+            // Ajouter le nom du joueur dans la première colonne
+            const playerCell = document.createElement('td');
+            playerCell.textContent = playerName;
+            row.appendChild(playerCell);
+
+            // Ajouter une cellule de score pour chaque manche existante
             for (let i = 0; i < roundCount; i++) {
-                scoreCells += `<td><input type="number" class="score" data-player="${playerCount}" data-round="${i + 1}" onchange="updateScore()"></td>`;
+                const scoreCell = document.createElement('td');
+                scoreCell.innerHTML = `<input type="number" class="score" data-player="${playerCount}" data-round="${i + 1}" onchange="updateScore()">`;
+                row.appendChild(scoreCell);
             }
 
-            row.innerHTML = `
-                <td>${playerName}</td>
-                ${scoreCells}
-                <td><span class="total">0</span></td>
-            `;
+            // Ajouter une cellule pour le total du joueur
+            const totalCell = document.createElement('td');
+            totalCell.innerHTML = '<span class="total">0</span>';
+            row.appendChild(totalCell);
 
             tableBody.appendChild(row);
             document.getElementById('playerName').value = ""; // Réinitialiser le champ
@@ -182,11 +183,11 @@
             roundCount++;
             totalPerRound.push(0); // Ajouter un nouveau total pour la nouvelle manche
 
-            // Mettre à jour les en-têtes de colonnes
+            // Mettre à jour les en-têtes des colonnes des manches
             const headerRow = document.querySelector('#scoreboard thead tr');
             const newHeader = document.createElement('th');
             newHeader.textContent = `Manche ${roundCount}`;
-            headerRow.insertBefore(newHeader, document.getElementById(`roundHeader${roundCount}`));
+            headerRow.appendChild(newHeader);
 
             // Ajouter de nouvelles cellules de score pour chaque joueur
             const rows = document.querySelectorAll('#scoreboard tbody tr');
