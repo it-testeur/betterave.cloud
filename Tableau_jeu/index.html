@@ -40,7 +40,7 @@
 <div>
   <label>Ajouter un joueur : </label>
   <input type="text" id="nouveauJoueur" />
-  <button onclick="ajouterJoueur()">Ajouter</button>
+  <button id="btnAjouterJoueur">Ajouter</button>
 </div>
 
 <br>
@@ -52,7 +52,6 @@
     </tr>
   </thead>
   <tbody id="corpsTableau">
-    <!-- Les manches seront ici -->
   </tbody>
   <tfoot>
     <tr id="ligneTotaux" class="totaux">
@@ -73,7 +72,6 @@ function ajouterJoueur() {
   if (!nom) return;
 
   joueurs.push(nom);
-  inputNom.value = "";
 
   // Ajouter le nom dans l'en-tête
   const ligneEntete = document.getElementById("ligneEntete");
@@ -87,60 +85,4 @@ function ajouterJoueur() {
   tdTotal.innerText = "0";
   ligneTotaux.appendChild(tdTotal);
 
-  // Ajouter une cellule vide dans chaque manche existante
-  const lignes = document.querySelectorAll("#corpsTableau tr");
-  lignes.forEach(ligne => {
-    const td = document.createElement("td");
-    const input = document.createElement("input");
-    input.type = "number";
-    input.value = 0;
-    input.addEventListener("input", calculerTotaux);
-    td.appendChild(input);
-    ligne.appendChild(td);
-  });
-
-  calculerTotaux();
-}
-
-function ajouterManche() {
-  manches++;
-  const tr = document.createElement("tr");
-  const tdManche = document.createElement("td");
-  tdManche.innerText = `Manche ${manches}`;
-  tr.appendChild(tdManche);
-
-  for (let i = 0; i < joueurs.length; i++) {
-    const td = document.createElement("td");
-    const input = document.createElement("input");
-    input.type = "number";
-    input.value = 0;
-    input.addEventListener("input", calculerTotaux);
-    td.appendChild(input);
-    tr.appendChild(td);
-  }
-
-  document.getElementById("corpsTableau").appendChild(tr);
-  calculerTotaux();
-}
-
-function calculerTotaux() {
-  const lignes = document.querySelectorAll("#corpsTableau tr");
-  const totaux = Array(joueurs.length).fill(0);
-
-  lignes.forEach(ligne => {
-    const inputs = ligne.querySelectorAll("input");
-    inputs.forEach((input, index) => {
-      totaux[index] += parseInt(input.value) || 0;
-    });
-  });
-
-  // Mettre à jour les totaux
-  const ligneTotaux = document.getElementById("ligneTotaux");
-  totaux.forEach((total, index) => {
-    ligneTotaux.cells[index + 1].innerText = total;
-  });
-}
-</script>
-
-</body>
-</html>
+  // Ajouter une cellule vide dans chaque
