@@ -96,12 +96,14 @@
     <script>
         let joueurs = [];
         let manches = 0;
+        let scores = {};  // Object to store the scores for each player and round
 
         // Ajouter un joueur avec le bouton
         function ajouterJoueur() {
             const joueurName = document.getElementById('joueur-name').value.trim();
             if (joueurName && !joueurs.includes(joueurName)) {
                 joueurs.push(joueurName);
+                scores[joueurName] = []; // Initialize the player's score array
                 updateTable();
                 document.getElementById('joueur-name').value = '';
             } else {
@@ -119,6 +121,12 @@
         // Ajouter une manche
         function ajouterManche() {
             manches++;
+            // Initialize score for each player in the new round
+            joueurs.forEach(joueur => {
+                if (!scores[joueur][manches - 1]) {
+                    scores[joueur][manches - 1] = 0; // Initialize the score for the new round
+                }
+            });
             updateTable();
         }
 
@@ -143,7 +151,8 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `<td>Manche ${i}</td>`;
                 joueurs.forEach(joueur => {
-                    row.innerHTML += `<td><input type="number" data-joueur="${joueur}" data-manche="${i}" oninput="calculerTotal()"></td>`;
+                    const score = scores[joueur][i - 1] || 0;
+                    row.innerHTML += `<td><input type="number" value="${score}" data-joueur="${joueur}" data-manche="${i}" oninput="updateScores()"></td>`;
                 });
                 tbody.appendChild(row);
             }
@@ -152,22 +161,22 @@
             const totalRow = document.getElementById('total-row');
             totalRow.innerHTML = '<td>Total</td>';
             joueurs.forEach(joueur => {
-                totalRow.innerHTML += `<td id="total-${joueur}">0</td>`;
+                const total = scores[joueur].reduce((acc, score) => acc + score, 0); // Calculate the total for the player
+                totalRow.innerHTML += `<td id="total-${joueur}">${total}</td>`;
             });
         }
 
-        // Calculer le total des points pour chaque joueur
-        function calculerTotal() {
+        // Update the score when a value is changed
+        function updateScores() {
             joueurs.forEach(joueur => {
-                let total = 0;
                 for (let i = 1; i <= manches; i++) {
                     const input = document.querySelector(`input[data-joueur="${joueur}"][data-manche="${i}"]`);
                     if (input && input.value) {
-                        total += parseInt(input.value);
+                        scores[joueur][i - 1] = parseInt(input.value);
                     }
                 }
-                document.getElementById(`total-${joueur}`).textContent = total;
             });
+            updateTable(); // Recalculate the totals
         }
 
         // Ajouter une manche avec la touche "Entrée"
@@ -179,7 +188,6 @@
                 }
             }
         });
-
     </script>
 </body>
 </html>
