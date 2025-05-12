@@ -34,7 +34,7 @@
             font-weight: bold;
         }
 
-        input[type="number"] {
+        input[type="text"] {
             width: 60px;
             text-align: center;
         }
@@ -152,7 +152,7 @@
                 row.innerHTML = `<td>Manche ${i}</td>`;
                 joueurs.forEach(joueur => {
                     const score = scores[joueur][i - 1] || 0;
-                    row.innerHTML += `<td><input type="number" value="${score}" data-joueur="${joueur}" data-manche="${i}" oninput="updateScores(event)"></td>`;
+                    row.innerHTML += `<td><input type="text" value="${score}" data-joueur="${joueur}" data-manche="${i}" oninput="updateScores(event)"></td>`;
                 });
                 tbody.appendChild(row);
             }
@@ -170,10 +170,11 @@
         function updateScores(event) {
             const joueur = event.target.getAttribute('data-joueur');
             const manche = event.target.getAttribute('data-manche');
-            const newScore = parseInt(event.target.value);
+            const newScore = event.target.value;
 
-            if (!isNaN(newScore)) {
-                scores[joueur][manche - 1] = newScore;
+            // Validation pour s'assurer qu'il s'agit bien d'un nombre
+            if (!isNaN(newScore) && newScore !== "") {
+                scores[joueur][manche - 1] = parseInt(newScore);
             } else {
                 // Si la valeur n'est pas un nombre, réinitialiser le score
                 scores[joueur][manche - 1] = 0;
