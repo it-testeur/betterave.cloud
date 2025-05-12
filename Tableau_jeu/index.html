@@ -34,7 +34,7 @@
             font-weight: bold;
         }
 
-        input[type="number"], input[type="text"] {
+        input[type="number"] {
             width: 60px;
             text-align: center;
         }
@@ -152,7 +152,7 @@
                 row.innerHTML = `<td>Manche ${i}</td>`;
                 joueurs.forEach(joueur => {
                     const score = scores[joueur][i - 1] || 0;
-                    row.innerHTML += `<td><input type="text" value="${score}" data-joueur="${joueur}" data-manche="${i}" oninput="updateScores(event)"></td>`;
+                    row.innerHTML += `<td><input type="number" value="${score}" data-joueur="${joueur}" data-manche="${i}" oninput="updateScores(event)"></td>`;
                 });
                 tbody.appendChild(row);
             }
