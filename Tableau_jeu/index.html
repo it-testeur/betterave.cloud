@@ -66,7 +66,7 @@
 
     <div class="form-container">
         <label for="joueur-name">Nom du Joueur: </label>
-        <input type="text" id="joueur-name" placeholder="Nom du joueur">
+        <input type="text" id="joueur-name" placeholder="Nom du joueur" onkeypress="checkEnterPlayer(event)">
         <button onclick="ajouterJoueur()">Ajouter Joueur</button>
     </div>
 
@@ -89,6 +89,7 @@
         let joueurs = [];
         let manches = 0;
 
+        // Ajouter un joueur avec le bouton
         function ajouterJoueur() {
             const joueurName = document.getElementById('joueur-name').value.trim();
             if (joueurName && !joueurs.includes(joueurName)) {
@@ -100,11 +101,20 @@
             }
         }
 
+        // Ajouter un joueur avec la touche "Entrée"
+        function checkEnterPlayer(event) {
+            if (event.key === 'Enter') {
+                ajouterJoueur();
+            }
+        }
+
+        // Ajouter une manche
         function ajouterManche() {
             manches++;
             updateTable();
         }
 
+        // Mettre à jour le tableau avec les joueurs et les manches
         function updateTable() {
             const tableau = document.getElementById('tableau');
             const tbody = tableau.querySelector('tbody');
@@ -141,6 +151,7 @@
             });
         }
 
+        // Calculer le total des points pour chaque joueur
         function calculerTotal() {
             joueurs.forEach(joueur => {
                 let total = 0;
@@ -153,6 +164,17 @@
                 document.getElementById(`total-${joueur}`).textContent = total;
             });
         }
+
+        // Ajouter une manche avec la touche "Entrée"
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                // Vérifie si le champ joueur est vide
+                if (!document.getElementById('joueur-name').value.trim()) {
+                    ajouterManche();
+                }
+            }
+        });
+
     </script>
 </body>
 </html>
