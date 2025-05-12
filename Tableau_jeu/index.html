@@ -7,6 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
         }
 
         table {
@@ -16,7 +17,7 @@
         }
 
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
 
         th, td {
@@ -39,12 +40,12 @@
         }
 
         button {
-            margin: 10px;
             padding: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            margin-right: 10px;
         }
 
         button:hover {
@@ -59,31 +60,38 @@
             padding: 5px;
             margin: 5px;
         }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
-    <h1>Tableau de Comptage de Points - Tarot/Belote</h1>
+    <div class="container">
+        <h1>Tableau de Comptage de Points - Tarot/Belote</h1>
 
-    <div class="form-container">
-        <label for="joueur-name">Nom du Joueur: </label>
-        <input type="text" id="joueur-name" placeholder="Nom du joueur" onkeypress="checkEnterPlayer(event)">
-        <button onclick="ajouterJoueur()">Ajouter Joueur</button>
+        <div class="form-container">
+            <label for="joueur-name">Nom du Joueur: </label>
+            <input type="text" id="joueur-name" placeholder="Nom du joueur" onkeypress="checkEnterPlayer(event)">
+            <button onclick="ajouterJoueur()">Ajouter Joueur</button>
+        </div>
+
+        <table id="tableau" class="tableau">
+            <thead>
+                <tr>
+                    <th>Manches</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="total-row" class="total-row">
+                    <td>Total</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button onclick="ajouterManche()">Ajouter une Manche</button>
     </div>
-
-    <table id="tableau" class="tableau">
-        <thead>
-            <tr>
-                <th>Manches</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr id="total-row" class="total-row">
-                <td>Total</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <button onclick="ajouterManche()">Ajouter une Manche</button>
 
     <script>
         let joueurs = [];
