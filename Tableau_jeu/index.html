@@ -79,7 +79,7 @@
 
         <table id="tableau" class="tableau">
             <thead>
-                <tr>
+                <tr id="header-row">
                     <th>Manches</th>
                 </tr>
             </thead>
@@ -130,16 +130,13 @@
             // Clear previous data (except the total row)
             tbody.innerHTML = '<tr id="total-row" class="total-row"><td>Total</td></tr>';
             
-            // Add column headers for players
-            const headers = tableau.querySelector('thead');
-            if (headers.rows.length === 1) {
-                const headerRow = document.createElement('tr');
-                headerRow.innerHTML = `<th>Manches</th>`;
-                joueurs.forEach(joueur => {
-                    headerRow.innerHTML += `<th>${joueur}</th>`;
-                });
-                headers.appendChild(headerRow);
-            }
+            // Update the header row with players
+            const headerRow = document.getElementById('header-row');
+            headerRow.innerHTML = `<th>Manches</th>`; // Clear previous player names in the header
+
+            joueurs.forEach(joueur => {
+                headerRow.innerHTML += `<th>${joueur}</th>`;
+            });
 
             // Add rows for each round
             for (let i = 1; i <= manches; i++) {
