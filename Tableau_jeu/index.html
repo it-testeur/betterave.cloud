@@ -1,55 +1,49 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcul des Points par Manches</title>
+    <title>Tableau de Comptage de Points</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
+        table, th, td {
+            border: 1px solid black;
         }
 
-        .player-form {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        input[type="text"] {
+        th, td {
             padding: 10px;
-            margin-right: 10px;
-            font-size: 16px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .total-row {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            text-align: center;
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
         }
 
@@ -57,195 +51,108 @@
             background-color: #45a049;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .form-container {
+            margin-bottom: 20px;
         }
 
-        th,
-        td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-
-        input {
-            width: 80px;
+        .form-container input {
             padding: 5px;
-            text-align: center;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-
-        input[type="number"] {
-            max-width: 70px;
-        }
-
-        span.total {
-            font-weight: bold;
-            color: #2e8b57;
-        }
-
-        #roundTotals {
-            margin-top: 20px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        @media (max-width: 600px) {
-            table {
-                font-size: 14px;
-            }
-
-            input {
-                width: 60px;
-            }
+            margin: 5px;
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Calcul des Points par Manches</h1>
+    <h1>Tableau de Comptage de Points - Tarot/Belote</h1>
 
-        <!-- Formulaire pour ajouter des joueurs -->
-        <div class="player-form">
-            <label for="playerName">Nom du joueur :</label>
-            <input type="text" id="playerName" placeholder="Nom du joueur" />
-            <button onclick="addPlayer()">Ajouter un joueur</button>
-        </div>
-
-        <!-- Formulaire pour ajouter des manches -->
-        <div class="round-form">
-            <button onclick="addRound()">Ajouter une manche</button>
-        </div>
-
-        <table id="scoreboard">
-            <thead>
-                <tr>
-                    <th>Joueur</th>
-                    <!-- Les titres des manches seront ajoutés dynamiquement ici -->
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Les joueurs seront ajoutés dynamiquement ici -->
-            </tbody>
-        </table>
-
-        <!-- Total de chaque manche -->
-        <div id="roundTotals">
-            <h3>Total par Manche</h3>
-            <!-- Totaux des manches -->
-        </div>
+    <div class="form-container">
+        <label for="joueur-name">Nom du Joueur: </label>
+        <input type="text" id="joueur-name" placeholder="Nom du joueur">
+        <button onclick="ajouterJoueur()">Ajouter Joueur</button>
     </div>
 
+    <table id="tableau" class="tableau">
+        <thead>
+            <tr>
+                <th>Manches</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="total-row" class="total-row">
+                <td>Total</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button onclick="ajouterManche()">Ajouter une Manche</button>
+
     <script>
-        let playerCount = 0; // Compteur pour ajouter les joueurs dynamiquement
-        let roundCount = 0; // Compteur pour le nombre de manches
-        let totalPerRound = []; // Total pour chaque manche
+        let joueurs = [];
+        let manches = 0;
 
-        // Ajouter un joueur au tableau
-        function addPlayer() {
-            const playerName = document.getElementById('playerName').value.trim();
-            if (playerName === "") {
-                alert("Le nom du joueur ne peut pas être vide.");
-                return;
+        function ajouterJoueur() {
+            const joueurName = document.getElementById('joueur-name').value.trim();
+            if (joueurName && !joueurs.includes(joueurName)) {
+                joueurs.push(joueurName);
+                updateTable();
+                document.getElementById('joueur-name').value = '';
+            } else {
+                alert("Nom du joueur invalide ou déjà existant.");
             }
-
-            playerCount++;
-            const tableBody = document.querySelector('#scoreboard tbody');
-            const row = document.createElement('tr');
-
-            // Ajouter le nom du joueur dans la première colonne
-            const playerCell = document.createElement('td');
-            playerCell.textContent = playerName;
-            row.appendChild(playerCell);
-
-            // Ajouter une cellule de score pour chaque manche existante
-            for (let i = 0; i < roundCount; i++) {
-                const scoreCell = document.createElement('td');
-                scoreCell.innerHTML = `<input type="number" class="score" data-player="${playerCount}" data-round="${i + 1}" onchange="updateScore()">`;
-                row.appendChild(scoreCell);
-            }
-
-            // Ajouter une cellule pour le total du joueur
-            const totalCell = document.createElement('td');
-            totalCell.innerHTML = '<span class="total">0</span>';
-            row.appendChild(totalCell);
-
-            tableBody.appendChild(row);
-            document.getElementById('playerName').value = ""; // Réinitialiser le champ
         }
 
-        // Ajouter une manche
-        function addRound() {
-            roundCount++;
-            totalPerRound.push(0); // Ajouter un nouveau total pour la nouvelle manche
-
-            // Mettre à jour les en-têtes des colonnes des manches
-            const headerRow = document.querySelector('#scoreboard thead tr');
-            const newHeader = document.createElement('th');
-            newHeader.textContent = `Manche ${roundCount}`;
-            headerRow.appendChild(newHeader);
-
-            // Ajouter de nouvelles cellules de score pour chaque joueur
-            const rows = document.querySelectorAll('#scoreboard tbody tr');
-            rows.forEach(row => {
-                const newCell = document.createElement('td');
-                newCell.innerHTML = `<input type="number" class="score" data-round="${roundCount}" onchange="updateScore()">`;
-                row.appendChild(newCell);
-            });
-
-            // Ajouter un total pour cette nouvelle manche dans la section des totaux
-            const roundTotals = document.getElementById('roundTotals');
-            const totalDiv = document.createElement('p');
-            totalDiv.id = `round${roundCount}TotalText`;
-            totalDiv.innerHTML = `Manche ${roundCount}: <span id="round${roundCount}Total">0</span>`;
-            roundTotals.appendChild(totalDiv);
+        function ajouterManche() {
+            manches++;
+            updateTable();
         }
 
-        // Mettre à jour les scores et les totaux
-        function updateScore() {
-            const rows = document.querySelectorAll('#scoreboard tbody tr');
-            let totalPerPlayer = Array(playerCount).fill(0); // Réinitialiser les totaux des joueurs
-            totalPerRound = new Array(roundCount).fill(0); // Réinitialiser les totaux des manches
-
-            rows.forEach(row => {
-                let playerTotal = 0;
-                const scores = row.querySelectorAll('.score');
-
-                scores.forEach(score => {
-                    const value = parseInt(score.value) || 0;
-                    playerTotal += value;
-
-                    // Mise à jour du total de la manche
-                    const roundIndex = score.dataset.round - 1;
-                    totalPerRound[roundIndex] += value;
-
-                    // Mise à jour du total du joueur
-                    const playerIndex = score.dataset.player - 1;
-                    totalPerPlayer[playerIndex] += value;
+        function updateTable() {
+            const tableau = document.getElementById('tableau');
+            const tbody = tableau.querySelector('tbody');
+            
+            // Clear previous data (except the total row)
+            tbody.innerHTML = '<tr id="total-row" class="total-row"><td>Total</td></tr>';
+            
+            // Add column headers for players
+            const headers = tableau.querySelector('thead');
+            if (headers.rows.length === 1) {
+                const headerRow = document.createElement('tr');
+                headerRow.innerHTML = `<th>Manches</th>`;
+                joueurs.forEach(joueur => {
+                    headerRow.innerHTML += `<th>${joueur}</th>`;
                 });
+                headers.appendChild(headerRow);
+            }
 
-                // Mettre à jour le total du joueur
-                const totalCell = row.querySelector('.total');
-                totalCell.textContent = playerTotal;
+            // Add rows for each round
+            for (let i = 1; i <= manches; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>Manche ${i}</td>`;
+                joueurs.forEach(joueur => {
+                    row.innerHTML += `<td><input type="number" data-joueur="${joueur}" data-manche="${i}" oninput="calculerTotal()"></td>`;
+                });
+                tbody.appendChild(row);
+            }
+
+            // Add a new total row
+            const totalRow = document.getElementById('total-row');
+            totalRow.innerHTML = '<td>Total</td>';
+            joueurs.forEach(joueur => {
+                totalRow.innerHTML += `<td id="total-${joueur}">0</td>`;
             });
+        }
 
-            // Mettre à jour les totaux par manche
-            for (let i = 0; i < roundCount; i++) {
-                document.getElementById(`round${i + 1}Total`).textContent = totalPerRound[i];
-            }
-
-            // Mettre à jour les totaux par joueur
-            for (let i = 0; i < playerCount; i++) {
-                const row = document.querySelectorAll('#scoreboard tbody tr')[i];
-                const totalCell = row.querySelector('.total');
-                totalCell.textContent = totalPerPlayer[i];
-            }
+        function calculerTotal() {
+            joueurs.forEach(joueur => {
+                let total = 0;
+                for (let i = 1; i <= manches; i++) {
+                    const input = document.querySelector(`input[data-joueur="${joueur}"][data-manche="${i}"]`);
+                    if (input && input.value) {
+                        total += parseInt(input.value);
+                    }
+                }
+                document.getElementById(`total-${joueur}`).textContent = total;
+            });
         }
     </script>
 </body>
-
 </html>
