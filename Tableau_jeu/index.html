@@ -101,7 +101,10 @@
       players.forEach((_, index) => {
         const td = document.createElement("td");
         const input = document.createElement("input");
-        input.type = "number";
+        input.type = "text";
+      input.pattern = "-?[0-9]*"; // autorise les nombres négatifs
+        input.inputMode = "numeric"; // garde un clavier numérique
+
         input.style.width = "60px";
         input.onchange = updateTotals;
         td.appendChild(input);
