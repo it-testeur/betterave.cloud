@@ -1,197 +1,105 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de Comptage de Points</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tableau de Comptage de Points</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
 
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
 
-        th {
-            background-color: #f4f4f4;
-        }
+    th {
+      background-color: #f4f4f4;
+    }
 
-        .total-row {
-            background-color: #e0e0e0;
-            font-weight: bold;
-        }
+    .total-row {
+      background-color: #e0e0e0;
+      font-weight: bold;
+    }
 
-        input[type="text"] {
-            width: 60px;
-            text-align: center;
-        }
+    input[type="text"] {
+      width: 60px;
+      text-align: center;
+    }
 
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-right: 10px;
-        }
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    button:hover {
+      background-color: #45a049;
+    }
 
-        .form-container {
-            margin-bottom: 20px;
-        }
+    .form-container {
+      margin-bottom: 20px;
+    }
 
-        .form-container input {
-            padding: 5px;
-            margin: 5px;
-        }
+    .form-container input {
+      padding: 5px;
+      margin: 5px;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-    </style>
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Tableau de Comptage de Points - Tarot/Belote</h1>
+  <div class="container">
+    <h1>Tableau de Comptage de Points - Tarot/Belote</h1>
 
-        <div class="form-container">
-            <label for="joueur-name">Nom du Joueur: </label>
-            <input type="text" id="joueur-name" placeholder="Nom du joueur" onkeypress="checkEnterPlayer(event)">
-            <button onclick="ajouterJoueur()">Ajouter Joueur</button>
-        </div>
-
-        <table id="tableau" class="tableau">
-            <thead>
-                <tr id="header-row">
-                    <th>Manches</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="total-row" class="total-row">
-                    <td>Total</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <button onclick="ajouterManche()">Ajouter une Manche</button>
+    <div class="form-container">
+      <label for="joueur-name">Nom du Joueur: </label>
+      <input type="text" id="joueur-name" placeholder="Nom du joueur" onkeypress="checkEnterPlayer(event)">
+      <button onclick="ajouterJoueur()">Ajouter Joueur</button>
     </div>
 
-    <script>
-        let joueurs = [];
-        let manches = 0;
-        let scores = {};  // Object to store the scores for each player and round
+    <table id="tableau" class="tableau">
+      <thead>
+        <tr id="header-row">
+          <th>Manches</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr id="total-row" class="total-row">
+          <td>Total</td>
+        </tr>
+      </tbody>
+    </table>
 
-        // Ajouter un joueur avec le bouton
-        function ajouterJoueur() {
-            const joueurName = document.getElementById('joueur-name').value.trim();
-            if (joueurName && !joueurs.includes(joueurName)) {
-                joueurs.push(joueurName);
-                scores[joueurName] = []; // Initialize the player's score array
-                updateTable();
-                document.getElementById('joueur-name').value = '';
-            } else {
-                alert("Nom du joueur invalide ou déjà existant.");
-            }
-        }
+    <button onclick="ajouterManche()">Ajouter une Manche</button>
+  </div>
 
-        // Ajouter un joueur avec la touche "Entrée"
-        function checkEnterPlayer(event) {
-            if (event.key === 'Enter') {
-                ajouterJoueur();
-            }
-        }
+  <script>
+    let joueurs = [];
+    let manches = 0;
+    let scores = {};
 
-        // Ajouter une manche
-        function ajouterManche() {
-            manches++;
-            // Initialize score for each player in the new round
-            joueurs.forEach(joueur => {
-                if (scores[joueur].length < manches) {
-                    scores[joueur].push(0); // Initialize the score for the new round if not already done
-                }
-            });
-            updateTable();
-        }
-
-        // Mettre à jour le tableau avec les joueurs et les manches
-        function updateTable() {
-            const tableau = document.getElementById('tableau');
-            const tbody = tableau.querySelector('tbody');
-            
-            // Clear previous data (except the total row)
-            tbody.innerHTML = '<tr id="total-row" class="total-row"><td>Total</td></tr>';
-            
-            // Update the header row with players
-            const headerRow = document.getElementById('header-row');
-            headerRow.innerHTML = `<th>Manches</th>`; // Clear previous player names in the header
-
-            joueurs.forEach(joueur => {
-                headerRow.innerHTML += `<th>${joueur}</th>`;
-            });
-
-            // Add rows for each round
-            for (let i = 1; i <= manches; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>Manche ${i}</td>`;
-                joueurs.forEach(joueur => {
-                    const score = scores[joueur][i - 1] || 0;
-                    row.innerHTML += `<td><input type="text" value="${score}" data-joueur="${joueur}" data-manche="${i}" oninput="updateScores(event)"></td>`;
-                });
-                tbody.appendChild(row);
-            }
-
-            // Add a new total row
-            const totalRow = document.getElementById('total-row');
-            totalRow.innerHTML = '<td>Total</td>';
-            joueurs.forEach(joueur => {
-                const total = scores[joueur].reduce((acc, score) => acc + score, 0); // Calculate the total for the player
-                totalRow.innerHTML += `<td id="total-${joueur}">${total}</td>`;
-            });
-        }
-
-        // Update the score when a value is changed
-        function updateScores(event) {
-            const joueur = event.target.getAttribute('data-joueur');
-            const manche = event.target.getAttribute('data-manche');
-            const newScore = event.target.value;
-
-            // Validation pour s'assurer qu'il s'agit bien d'un nombre
-            if (!isNaN(newScore) && newScore !== "") {
-                scores[joueur][manche - 1] = parseInt(newScore);
-            } else {
-                // Si la valeur n'est pas un nombre, réinitialiser le score
-                scores[joueur][manche - 1] = 0;
-            }
-
-            updateTable(); // Recalculate the totals
-        }
-
-        // Ajouter une manche avec la touche "Entrée"
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                // Vérifie si le champ joueur est vide
-                if (!document.getElementById('joueur-name').value.trim()) {
-                    ajouterManche();
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+    function ajouterJoueur() {
+      const joueurName = document.getElementById('joueur-name').value.trim();
+      if (joueurName && !joueurs.includes(joueurName)) {
+        joueurs.push(joueurName);
+        scores[joueur]()
