@@ -3,103 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tableau de Comptage de Points</title>
+  <title>Score Tarot</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
     }
-
+    input, button {
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 16px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin-top: 20px;
     }
-
-    table, th, td {
-      border: 1px solid #ddd;
-    }
-
     th, td {
+      border: 1px solid #ccc;
       padding: 10px;
       text-align: center;
     }
-
-    th {
-      background-color: #f4f4f4;
-    }
-
-    .total-row {
-      background-color: #e0e0e0;
-      font-weight: bold;
-    }
-
-    input[type="text"] {
-      width: 60px;
-      text-align: center;
-    }
-
-    button {
-      padding: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    .form-container {
-      margin-bottom: 20px;
-    }
-
-    .form-container input {
-      padding: 5px;
-      margin: 5px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
+    .mobile-friendly {
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Tableau de Comptage de Points - Tarot/Belote</h1>
+  <h2>Gestion de Score - Tarot</h2>
 
-    <div class="form-container">
-      <label for="joueur-name">Nom du Joueur: </label>
-      <input type="text" id="joueur-name" placeholder="Nom du joueur" onkeypress="checkEnterPlayer(event)">
-      <button onclick="ajouterJoueur()">Ajouter Joueur</button>
+  <div id="setup">
+    <label>Nom du joueur : <input type="text" id="playerName" /></label>
+    <button onclick="addPlayer()">Ajouter joueur</button>
+    <ul id="playerList"></ul>
+    <button onclick="startGame()">Commencer la partie</button>
+  </div>
+
+  <div id="game" style="display:none;">
+    <button onclick="addRound()">Ajouter une manche</button>
+    <div class="mobile-friendly">
+      <table id="scoreTable">
+        <thead><tr id="tableHeader"></tr></thead>
+        <tbody id="tableBody"></tbody>
+        <tfoot><tr id="totalsRow"></tr></tfoot>
+      </table>
     </div>
-
-    <table id="tableau" class="tableau">
-      <thead>
-        <tr id="header-row">
-          <th>Manches</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-        <tr id="total-row" class="total-row">
-          <td>Total</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <button onclick="ajouterManche()">Ajouter une Manche</button>
   </div>
 
   <script>
-    let joueurs = [];
-    let manches = 0;
-    let scores = {};
+    let players = [];
 
-    function ajouterJoueur() {
-      const joueurName = document.getElementById('joueur-name').value.trim();
-      if (joueurName && !joueurs.includes(joueurName)) {
-        joueurs.push(joueurName);
-        scores[joueur]()
+    function addPlayer() {
+      const input = document.getElementById("playerName");
+      const name = input.value.trim();
+      if (name && !players.includes(name)) {
+        players.push(name);
+        const listItem = document.createElement("li");
+        listItem.textContent = name;
+        document.getElementById("playerList").appendChild(listItem);
+        input.value = "";
+      }
+    }
+
+    function startGame() {
+      if (players.length < 2) {
+        alert("Ajoutez au moins 2 joueurs.");
+        return;
+      }
+      document.getElementById("setup").style.display = "none";
+      document.getElementById("game").style.display = "block";
+
+      const headerRow = document.getElementById("tableHeader");
+      headerRow.innerHTML = "<th>Manche</th>";
+      players.forEach(p => {
+        const th = document.createElement("th");
+        th.textContent = p;
+        headerRow.appendChild(th);
+      });
+
+      const totalsRow = document.getElementById("totalsRow");
+      totalsRow.innerHTML = "<th>Total</th>";
+      players.forEach(() => {
+        const td = document.createElement("td");
+        td.textContent = "0";
+        totalsRow.appendChild(td);
+      });
+    }
+
+    function addRound() {
+      const tbody = document.getElementById("tableBody");
+      const row = document.createElement("tr");
+      const roundNumber = tbody.children.length + 1;
+      row.innerHTML = `<td>Manche ${roundNumber}</td>`;
+
+      players.forEach((_, index) => {
+        const td = document.createElement("td");
+        const input = document.createElement("input");
+        input.type = "number";
+        input.style.width = "60px";
+        input.onchange = updateTotals;
+        td.appendChild(input);
+        row.appendChild(td);
+      });
+
+      tbody.appendChild(row);
+    }
+
+    function updateTotals() {
+      const totals = Array(players.length).fill(0);
+      const rows = document.getElementById("tableBody").children;
+
+      for (let r of rows) {
+        const inputs = r.querySelectorAll("input");
+        inputs.forEach((input, i) => {
+          const val = parseInt(input.value);
+          if (!isNaN(val)) {
+            totals[i] += val;
+          }
+        });
+      }
+
+      const totalCells = document.getElementById("totalsRow").children;
+      totals.forEach((t, i) => {
+        totalCells[i + 1].textContent = t;
+      });
+    }
+  </script>
+</body>
+</html>
