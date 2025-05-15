@@ -3,39 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Score Tarot</title>
+  <title>Le petit Compteur</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet">
+
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Quicksand', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      margin-top: 30px;
+      font-size: 2em;
+      color: #333;
+      text-shadow: 1px 1px 0 #fff;
+    }
+
+    #setup, #game {
+      background: white;
+      border-radius: 12px;
       padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 95%;
       max-width: 600px;
-      margin: auto;
     }
+
     input, button {
-      margin: 5px 0;
-      padding: 8px;
       font-size: 16px;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
     }
+
+    button {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      background: #fefefe;
+      border-radius: 10px;
+      overflow: hidden;
     }
+
     th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
+      padding: 12px;
+      border: 1px solid #ddd;
       text-align: center;
     }
+
+    th {
+      background-color: #0077cc;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #eef;
+    }
+
+    input[type="text"] {
+      width: 60px;
+      text-align: center;
+    }
+
     .mobile-friendly {
       overflow-x: auto;
+    }
+
+    ul {
+      padding-left: 20px;
     }
   </style>
 </head>
 <body>
-  <h2>Gestion de Score - Tarot</h2>
+  <h2>Le petit Compteur</h2>
 
   <div id="setup">
-    <label>Nom du joueur : <input type="text" id="playerName" /></label>
+    <label>Nom du joueur :
+      <input type="text" id="playerName" placeholder="Entrez un nom" />
+    </label>
     <button onclick="addPlayer()">Ajouter joueur</button>
     <ul id="playerList"></ul>
     <button onclick="startGame()">Commencer la partie</button>
@@ -98,13 +170,12 @@
       const roundNumber = tbody.children.length + 1;
       row.innerHTML = `<td>Manche ${roundNumber}</td>`;
 
-      players.forEach((_, index) => {
+      players.forEach(() => {
         const td = document.createElement("td");
         const input = document.createElement("input");
         input.type = "text";
-      input.pattern = "-?[0-9]*"; // autorise les nombres négatifs
-        input.inputMode = "numeric"; // garde un clavier numérique
-
+        input.inputMode = "numeric";
+        input.pattern = "-?[0-9]*";
         input.style.width = "60px";
         input.onchange = updateTotals;
         td.appendChild(input);
