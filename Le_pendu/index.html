@@ -95,6 +95,12 @@
       border-radius: 6px;
     }
 
+    .pendu-image {
+      width: 200px;
+      height: auto;
+      margin: 20px auto;
+    }
+
     @media screen and (max-width: 600px) {
       .letters button {
         padding: 8px;
@@ -104,6 +110,10 @@
       .word {
         font-size: 1.6em;
         letter-spacing: 6px;
+      }
+
+      .pendu-image {
+        width: 150px;
       }
     }
   </style>
@@ -124,6 +134,8 @@
   </div>
 
   <div id="gameScreen" class="hidden">
+    <img id="penduImg" class="pendu-image" src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Hangman-0.svg" alt="Dessin du pendu" />
+    <div>Erreurs : <span id="failsDisplay">0</span> / 7</div>
     <div class="word" id="wordDisplay">_ _ _ _ _</div>
     <div class="letters" id="letterButtons"></div>
     <div class="status" id="statusMessage"></div>
@@ -132,6 +144,17 @@
 </main>
 
 <script>
+  const penduImages = [
+    "https://upload.wikimedia.org/wikipedia/commons/8/8b/Hangman-0.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/2/27/Hangman-1.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/52/Hangman-2.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/8/8d/Hangman-3.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/3/30/Hangman-4.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/6/6b/Hangman-5.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/d/d6/Hangman-6.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/6/62/Hangman-7.svg"
+  ];
+
   let selectedWord = "";
   let guessedLetters = [];
   let maxFails = 7;
@@ -149,6 +172,8 @@
     guessedLetters = [];
     fails = 0;
     document.getElementById("statusMessage").textContent = "";
+    document.getElementById("failsDisplay").textContent = "0";
+    updatePenduImage();
     displayWord();
     createLetterButtons();
   }
@@ -189,12 +214,19 @@
       displayWord();
     } else {
       fails++;
+      document.getElementById("failsDisplay").textContent = fails;
+      updatePenduImage();
       if (fails >= maxFails) {
         document.getElementById("statusMessage").innerHTML =
           `<span class='status'>Perdu 😢 ! Le mot était : <strong>${selectedWord}</strong></span>`;
         disableAllButtons();
       }
     }
+  }
+
+  function updatePenduImage() {
+    const img = document.getElementById("penduImg");
+    img.src = penduImages[Math.min(fails, penduImages.length - 1)];
   }
 
   function disableAllButtons() {
