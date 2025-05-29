@@ -32,16 +32,23 @@
 
         main {
             padding: 40px 20px;
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
+        .sections-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
         section {
+            flex: 1;
             background-color: white;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            min-width: 300px;
         }
 
         h2 {
@@ -54,12 +61,11 @@
             font-size: 1.1em;
             text-decoration: none;
             color: #4a90e2;
-            border-bottom: 2px solid transparent;
-            padding-bottom: 2px;
+            font-weight: bold;
         }
 
         .lien-jeu:hover {
-            border-bottom: 2px solid #4a90e2;
+            text-decoration: underline;
         }
 
         footer {
@@ -69,37 +75,37 @@
             padding: 20px;
         }
     </style>
-        .lien-jeu {
-        text-decoration: none;
-        color: #4a90e2;
-        font-weight: bold;
-    }
-
-    .lien-jeu:hover {
-        text-decoration: underline;
-    }
-</style>
 </head>
 <body>
 
 <header>
     <h1>Bienvenue dans l'Univers des Jeux</h1>
-    <p>Tu es tombé sur un petit site rempli de surprises : des jeux amusants et différentes aides  !</p>
+    <p>Tu es tombé sur un petit site rempli de surprises : des jeux amusants et différentes aides utiles !</p>
 </header>
 
 <main>
-    <section>
-        <h2>Découvre nos jeux et aides</h2>
-        <p>Voici les différents jeux et aides disponibles :</p>
+    <div class="sections-container">
 
-        <!-- 🔽 C'est ici que tu ajoutes tes liens 🔽 -->
-        <a href="https://www.betterave.cloud/Tableau_jeu">🎮 tableau comptage de point</a>
-        <a class="lien-jeu" href="jeu2.html">🧠 Jeu de mémoire</a>
-        <a class="lien-jeu" href="aide1.html">📘 Astuces pour Minecraft</a>
-        <a class="lien-jeu" href="aide2.html">🏎️ Aide Mario Kart</a>
-        <!-- 🔼 Tu peux copier-coller d'autres lignes ici 🔼 -->
+        <section>
+            <h2>🎮 Jeux</h2>
+            <p>Des petits jeux pour s'amuser et passer le temps :</p>
+            <!-- Ajoute ici tes liens de jeux -->
+            <a class="lien-jeu" href="jeu1.html">🎲 Devine le nombre</a>
+            <a class="lien-jeu" href="jeu2.html">🧠 Jeu de mémoire</a>
+            <!-- Ajoute d'autres jeux ici -->
+        </section>
 
-    </section>
+        <section>
+            <h2>📘 Aides aux jeux</h2>
+            <p>Des astuces, tutoriels ou outils pour t’aider à mieux jouer :</p>
+            <!-- Ajoute ici tes liens d'aide -->
+            <a class="lien-jeu" href="https://www.betterave.cloud/Tableau_jeu">📊 Tableau de comptage de points</a>
+            <a class="lien-jeu" href="aide1.html">💡 Astuces pour Minecraft</a>
+            <a class="lien-jeu" href="aide2.html">🏎️ Conseils pour Mario Kart</a>
+            <!-- Ajoute d'autres aides ici -->
+        </section>
+
+    </div>
 </main>
 
 <footer>
