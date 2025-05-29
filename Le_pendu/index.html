@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jeu du Pendu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8f8ff, #d0e2ff);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background-color: #4a90e2;
+      color: white;
+      padding: 40px 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.3em;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .word {
+      font-size: 2em;
+      letter-spacing: 10px;
+      margin: 30px 0;
+      word-wrap: break-word;
+    }
+
+    .letters {
+      margin: 20px 0;
+    }
+
+    .letters button {
+      font-size: 1em;
+      margin: 5px;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 6px;
+      background-color: #e0eaff;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .letters button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 30px;
+      font-size: 1.2em;
+      color: #d9534f;
+    }
+
+    .win {
+      color: green;
+      font-weight: bold;
+    }
+
+    .reset-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 80%;
+      margin-top: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    @media screen and (max-width: 600px) {
+      .letters button {
+        padding: 8px;
+        font-size: 0.9em;
+      }
+
+      .word {
+        font-size: 1.6em;
+        letter-spacing: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎉 Jeu du Pendu 🎉</h1>
+  <p>Devine un mot... ou propose le tien !</p>
+</header>
+
+<main>
+  <div id="setupScreen">
+    <h2>Entrez un mot secret</h2>
+    <input type="text" id="customWord" placeholder="Ex : chocolat" maxlength="20" />
+    <br />
+    <button class="reset-btn" onclick="startGameWithCustomWord()">Commencer</button>
+  </div>
+
+  <div id="gameScreen" class="hidden">
+    <div class="word" id="wordDisplay">_ _ _ _ _</div>
+    <div class="letters" id="letterButtons"></div>
+    <div class="status" id="statusMessage"></div>
+    <button class="reset-btn" onclick="restart()">🔄 Rejouer</button>
+  </div>
+</main>
+
+<script>
+  let selectedWord = "";
+  let guessedLetters = [];
+  let maxFails = 7;
+  let fails = 0;
+
+  function startGameWithCustomWord() {
+    const input = document.getElementById("customWord").value.trim().toLowerCase();
+    if (!input || !/^[a-zéèêàç\-]+$/i.test(input)) {
+      alert("Veuillez entrer un mot valide (lettres uniquement).");
+      return;
+    }
+    selectedWord = input;
+    document.getElementById("setupScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    guessedLetters = [];
+    fails = 0;
+    document.getElementById("statusMessage").textContent = "";
+    displayWord();
+    createLetterButtons();
+  }
+
+  function displayWord() {
+    const display = selectedWord
+      .split("")
+      .map(letter =>
+        guessedLetters.includes(letter) || letter === "-" ? letter : "_"
+      )
+      .join(" ");
+    document.getElementById("wordDisplay").textContent = display;
+
+    if (!display.includes("_")) {
+      document.getElementById("statusMessage").innerHTML =
+        "<span class='win'>Bravo ! Tu as deviné le mot ! 🎉</span>";
+      disableAllButtons();
+    }
+  }
+
+  function createLetterButtons() {
+    const container = document.getElementById("letterButtons");
+    container.innerHTML = "";
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for (let letter of alphabet) {
+      const btn = document.createElement("button");
+      btn.textContent = letter;
+      btn.onclick = () => guessLetter(letter, btn);
+      container.appendChild(btn);
+    }
+  }
+
+  function guessLetter(letter, btn) {
+    btn.disabled = true;
+
+    if (selectedWord.includes(letter)) {
+      guessedLetters.push(letter);
+      displayWord();
+    } else {
+      fails++;
+      if (fails >= maxFails) {
+        document.getElementById("statusMessage").innerHTML =
+          `<span class='status'>Perdu 😢 ! Le mot était : <strong>${selectedWord}</strong></span>`;
+        disableAllButtons();
+      }
+    }
+  }
+
+  function disableAllButtons() {
+    const buttons = document.querySelectorAll(".letters button");
+    buttons.forEach(btn => btn.disabled = true);
+  }
+
+  function restart() {
+    document.getElementById("customWord").value = "";
+    document.getElementById("setupScreen").classList.remove("hidden");
+    document.getElementById("gameScreen").classList.add("hidden");
+  }
+</script>
+
+</body>
+</html>
