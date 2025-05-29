@@ -95,11 +95,28 @@
       border-radius: 6px;
     }
 
-    .pendu-image {
-      width: 200px;
-      height: auto;
+    .pendu {
       margin: 20px auto;
+      width: 200px;
+      height: 250px;
+      position: relative;
     }
+
+    .pendu div {
+      position: absolute;
+      background-color: #333;
+    }
+
+    .base { width: 100%; height: 10px; bottom: 0; left: 0; }
+    .pole { width: 10px; height: 100%; left: 20px; bottom: 0; }
+    .barre { width: 100px; height: 10px; top: 0; left: 20px; }
+    .corde { width: 2px; height: 30px; left: 120px; top: 10px; background-color: #999; }
+    .tete { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #333; top: 40px; left: 105px; background: none; display: none; }
+    .corps { width: 4px; height: 50px; top: 70px; left: 120px; display: none; }
+    .brasG { width: 40px; height: 4px; top: 90px; left: 80px; transform: rotate(-30deg); display: none; }
+    .brasD { width: 40px; height: 4px; top: 90px; left: 120px; transform: rotate(30deg); display: none; }
+    .jambeG { width: 40px; height: 4px; top: 120px; left: 80px; transform: rotate(30deg); display: none; }
+    .jambeD { width: 40px; height: 4px; top: 120px; left: 120px; transform: rotate(-30deg); display: none; }
 
     @media screen and (max-width: 600px) {
       .letters button {
@@ -110,10 +127,6 @@
       .word {
         font-size: 1.6em;
         letter-spacing: 6px;
-      }
-
-      .pendu-image {
-        width: 150px;
       }
     }
   </style>
@@ -134,7 +147,18 @@
   </div>
 
   <div id="gameScreen" class="hidden">
-    <img id="penduImg" class="pendu-image" src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Hangman-0.svg" alt="Dessin du pendu" />
+    <div class="pendu">
+      <div class="base"></div>
+      <div class="pole"></div>
+      <div class="barre"></div>
+      <div class="corde"></div>
+      <div class="tete" id="tete"></div>
+      <div class="corps" id="corps"></div>
+      <div class="brasG" id="brasG"></div>
+      <div class="brasD" id="brasD"></div>
+      <div class="jambeG" id="jambeG"></div>
+      <div class="jambeD" id="jambeD"></div>
+    </div>
     <div>Erreurs : <span id="failsDisplay">0</span> / 7</div>
     <div class="word" id="wordDisplay">_ _ _ _ _</div>
     <div class="letters" id="letterButtons"></div>
@@ -144,17 +168,6 @@
 </main>
 
 <script>
-  const penduImages = [
-    "https://upload.wikimedia.org/wikipedia/commons/8/8b/Hangman-0.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/2/27/Hangman-1.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/5/52/Hangman-2.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/8/8d/Hangman-3.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/3/30/Hangman-4.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/6/6b/Hangman-5.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/d/d6/Hangman-6.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/6/62/Hangman-7.svg"
-  ];
-
   let selectedWord = "";
   let guessedLetters = [];
   let maxFails = 7;
@@ -163,17 +176,17 @@
   function startGameWithCustomWord() {
     const input = document.getElementById("customWord").value.trim().toLowerCase();
     if (!input || !/^[a-zéèêàç\-]+$/i.test(input)) {
-      alert("Veuillez entrer un mot valide (lettres uniquement).");
+      alert("Veuillez entrer un mot valide.");
       return;
     }
     selectedWord = input;
-    document.getElementById("setupScreen").classList.add("hidden");
-    document.getElementById("gameScreen").classList.remove("hidden");
     guessedLetters = [];
     fails = 0;
+    document.getElementById("setupScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
     document.getElementById("statusMessage").textContent = "";
     document.getElementById("failsDisplay").textContent = "0";
-    updatePenduImage();
+    hidePendu();
     displayWord();
     createLetterButtons();
   }
@@ -215,7 +228,7 @@
     } else {
       fails++;
       document.getElementById("failsDisplay").textContent = fails;
-      updatePenduImage();
+      updatePenduDrawing(fails);
       if (fails >= maxFails) {
         document.getElementById("statusMessage").innerHTML =
           `<span class='status'>Perdu 😢 ! Le mot était : <strong>${selectedWord}</strong></span>`;
@@ -224,9 +237,18 @@
     }
   }
 
-  function updatePenduImage() {
-    const img = document.getElementById("penduImg");
-    img.src = penduImages[Math.min(fails, penduImages.length - 1)];
+  function updatePenduDrawing(stage) {
+    const parts = ["tete", "corps", "brasG", "brasD", "jambeG", "jambeD"];
+    if (stage >= 1 && stage <= parts.length) {
+      for (let i = 0; i < stage; i++) {
+        document.getElementById(parts[i]).style.display = "block";
+      }
+    }
+  }
+
+  function hidePendu() {
+    const parts = ["tete", "corps", "brasG", "brasD", "jambeG", "jambeD"];
+    parts.forEach(id => document.getElementById(id).style.display = "none");
   }
 
   function disableAllButtons() {
