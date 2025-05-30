@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fdfdfd;
+            background-color: #f0f0f0;
             text-align: center;
             padding: 40px;
         }
@@ -15,85 +15,77 @@
             color: #333;
         }
 
-        .signe {
-            margin-top: 30px;
-        }
-
-        .signe img {
+        img {
             width: 300px;
-            height: auto;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .description {
             font-size: 20px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
-        .btn-suivant {
-            margin-top: 30px;
+        button {
             padding: 10px 20px;
+            font-size: 18px;
             background-color: #28a745;
             color: white;
-            font-size: 18px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
         }
 
-        .btn-suivant:hover {
+        button:hover {
             background-color: #218838;
         }
 
-        a.retour {
-            display: inline-block;
-            margin-top: 40px;
+        a {
+            display: block;
+            margin-top: 30px;
             color: #007BFF;
             text-decoration: none;
-            font-size: 16px;
         }
 
-        a.retour:hover {
+        a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>Apprentissage des Signes</h1>
-
-    <div class="signe">
-        <img id="imageSigne" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Sign_language_Bonjour_LSF.jpg/800px-Sign_language_Bonjour_LSF.jpg" alt="Signe Bonjour">
-        <div class="description" id="texteSigne">Ce signe signifie : <strong>Bonjour</strong></div>
+    <h1>Apprentissage de la Langue des Signes</h1>
+    <div>
+        <img id="imageSigne" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Sign_language_Bonjour_LSF.jpg/800px-Sign_language_Bonjour_LSF.jpg" alt="Signe">
+        <div class="description" id="descriptionSigne">
+            Ce signe signifie : <strong>Bonjour</strong>
+        </div>
+        <button onclick="suivant()">Signe suivant</button>
     </div>
 
-    <button class="btn-suivant" onclick="changerSigne()">Signe suivant</button>
-
-    <br>
-    <a class="retour" href="index.html">← Retour au sommaire</a>
+    <a href="index.html">← Retour au sommaire</a>
 
     <script>
         const signes = [
             {
                 image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Sign_language_Bonjour_LSF.jpg/800px-Sign_language_Bonjour_LSF.jpg",
-                texte: "Ce signe signifie : <strong>Bonjour</strong>"
+                description: "Ce signe signifie : <strong>Bonjour</strong>"
             },
             {
                 image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Sign_language_Merci_LSF.jpg/800px-Sign_language_Merci_LSF.jpg",
-                texte: "Ce signe signifie : <strong>Merci</strong>"
+                description: "Ce signe signifie : <strong>Merci</strong>"
             },
             {
                 image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Sign_language_Maman_LSF.jpg/800px-Sign_language_Maman_LSF.jpg",
-                texte: "Ce signe signifie : <strong>Maman</strong>"
+                description: "Ce signe signifie : <strong>Maman</strong>"
             }
         ];
 
         let index = 0;
 
-        function changerSigne() {
+        function suivant() {
             index = (index + 1) % signes.length;
             document.getElementById("imageSigne").src = signes[index].image;
-            document.getElementById("texteSigne").innerHTML = signes[index].texte;
+            document.getElementById("descriptionSigne").innerHTML = signes[index].description;
         }
     </script>
 </body>
