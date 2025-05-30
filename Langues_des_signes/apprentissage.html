@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Apprentissage - Langue des Signes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fdfdfd;
+            text-align: center;
+            padding: 40px;
+        }
 
+        h1 {
+            color: #333;
+        }
+
+        .signe {
+            margin-top: 30px;
+        }
+
+        .signe img {
+            width: 300px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .description {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .btn-suivant {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-suivant:hover {
+            background-color: #218838;
+        }
+
+        a.retour {
+            display: inline-block;
+            margin-top: 40px;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        a.retour:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Apprentissage des Signes</h1>
+
+    <div class="signe">
+        <img src="bonjour.jpg" alt="Signe Bonjour">
+        <div class="description">Ce signe signifie : <strong>Bonjour</strong></div>
+    </div>
+
+    <!-- Plus tard ce bouton servira à afficher un autre signe -->
+    <button class="btn-suivant" onclick="alert('D’autres signes bientôt disponibles !')">Signe suivant</button>
+
+    <br>
+    <a class="retour" href="index.html">← Retour au sommaire</a>
+</body>
+</html>
